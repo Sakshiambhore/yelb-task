@@ -10,11 +10,6 @@ jobs:
   build:
     runs-on: tag1
 
-
-    
-
-    
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
