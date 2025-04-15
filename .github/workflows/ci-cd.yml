@@ -41,7 +41,12 @@ jobs:
       # #############################
       # ## Dockerfile Linting
       # #############################
-
+      - name: Lint Dockerfiles
+        run: |
+         hadolint ./yelb-ui/Dockerfile
+         hadolint ./yelb-appserver/Dockerfile
+         hadolint ./yelb-db/Dockerfile
+         # hadolint ./yelb-redis/Dockerfile
       # - name: Lint Dockerfiles
       #   run: |
       #     docker run --rm -i hadolint/hadolint < ./yelb-ui/Dockerfile
