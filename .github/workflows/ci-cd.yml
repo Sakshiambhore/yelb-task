@@ -32,7 +32,7 @@ jobs:
         run: docker build -t yelb-db ./yelb-db
 
       - name: Build yelb-redis
-        run: docker build -t yelb-redis ./yelb-redis
+        run: docker build -t yelb-redis ./yelb/yelb-redis
 
       # #########################
       # ## Scan with Trivy
