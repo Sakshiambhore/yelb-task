@@ -31,9 +31,6 @@ jobs:
       # - name: Build yelb-db
       #   run: docker build -t yelb-db ./yelb-db
 
-      - name: Build yelb-redis
-        run: docker build -t yelb-redis yelb-redis
-
       - name: Build yelb-db
         run: docker build -t yelb-db yelb-db
 
