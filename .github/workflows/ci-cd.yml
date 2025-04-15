@@ -1,87 +1,22 @@
-name: CI/CD Pipeline for Yelb
-
+name: Yelb CI/CD
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
-  workflow_dispatch:
+    branches: ["master"]
 
 jobs:
   build:
-    runs-on: runner1
+    runs-on: self-hosted,runner1
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Dockerfile Lint (yelb-ui)
-        uses: hadolint/hadolint-action@v1
-        with:
-          dockerfile: ./yelb-ui/Dockerfile
-
-  lint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Dockerfile Lint (root)
-        uses: hadolint/hadolint-action@v1
-        with:
-          dockerfile: ./Dockerfile
+        uses: docker/setup-buildx-action@v2
 
       - name: Build Docker Image
         run: |
-          docker build -t yelb-ui:latest ./yelb-ui | tee /tmp/build-logs.txt
+          docker build -t yelb-app ./yelb-ui
 
-      - name: Docker Scout Scan
-        uses: docker/scout-action@v1
-        with:
-          image: yelb-ui:latest
-
-      - name: Login to Private Registry
-        run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login ${{ secrets.REGISTRY_URL }} -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin
-
-      - name: Tag and Push to Registry
-        run: |
-          docker tag yelb-ui:latest ${{ secrets.REGISTRY_URL }}/yelb-ui:latest
-          docker push ${{ secrets.REGISTRY_URL }}/yelb-ui:latest
-
-      - name: Upload Build Logs
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-logs
-          path: /tmp/build-logs.txt
-
-      - name: Deploy to Staging
-        run: |
-          echo "Deploying to staging..."
-          # Example: kubectl apply -f staging/deployment.yaml
-
-      - name: Run Tests in Staging
-        run: echo "Tests passed in staging"
-
-      - name: Deploy to Production
-        if: success()
-        run: |
-          echo "Deploying to production..."
-          # Example: kubectl apply -f prod/deployment.yaml
-
-      - name: Slack Notification
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          fields: repo,commit,author
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-
-          
