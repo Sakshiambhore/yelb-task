@@ -1,5 +1,5 @@
 FROM node:12.22
-MAINTAINER massimo@it20.info
+LABEL maintainer=massimo@it20.info
 
 WORKDIR /
 
