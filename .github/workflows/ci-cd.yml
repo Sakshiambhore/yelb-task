@@ -22,17 +22,26 @@ jobs:
       ## Build All Images
       #######################
 
-      - name: Build yelb-ui
-        run: docker build -t yelb-ui ./yelb-ui
+      # - name: Build yelb-ui
+      #   run: docker build -t yelb-ui ./yelb-ui
 
-      - name: Build yelb-appserver
-        run: docker build -t yelb-appserver ./yelb-appserver
+      # - name: Build yelb-appserver
+      #   run: docker build -t yelb-appserver ./yelb-appserver
 
-      - name: Build yelb-db
-        run: docker build -t yelb-db ./yelb-db
+      # - name: Build yelb-db
+      #   run: docker build -t yelb-db ./yelb-db
 
       - name: Build yelb-redis
-        run: docker build -t yelb-redis ./yelb/yelb-redis
+        run: docker build -t yelb-redis yelb-redis
+
+      - name: Build yelb-db
+        run: docker build -t yelb-db yelb-db
+
+      - name: Build yelb-appserver
+        run: docker build -t yelb-appserver yelb-appserver
+
+      - name: Build yelb-ui
+        run: docker build -t yelb-ui yelb-ui
 
       # #########################
       # ## Scan with Trivy
