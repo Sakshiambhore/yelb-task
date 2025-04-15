@@ -1,5 +1,5 @@
 FROM postgres:10.21
-MAINTAINER massimo@it20.info
+LABEL maintainer=massimo@it20.info
 
 WORKDIR /
 
