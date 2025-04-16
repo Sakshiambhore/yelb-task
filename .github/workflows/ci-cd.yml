@@ -75,15 +75,17 @@ jobs:
       #############################
       ## Staging Deployment
       #############################
+      - name: Login to DockerHub
+        run: echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
 
       - name: Run containers for staging
         run: |
           docker network create yelb-network
 
-          docker run -d --network yelb-network --name  yelb-db yelb-db
-          docker run -d --network yelb-network --name  yelb-redis -p 6379:6379 yelb-redis
-          docker run -d --network yelb-network --name yelb-appserver -p 4567:4567 yelb-appserver
-          docker run -d --network yelb-network --name yelb-ui -p 80:80 yelb-ui
+          docker run -d --network yelb-network --name  yelb-db ${DOCKERHUB_USERNAME}/yelb-db
+          docker run -d --network yelb-network --name  yelb-redis -p 6379:6379 ${DOCKERHUB_USERNAME}/yelb-redis
+          docker run -d --network yelb-network --name yelb-appserver -p 4567:4567 ${DOCKERHUB_USERNAME}/yelb-appserver
+          docker run -d --network yelb-network --name yelb-ui -p 80:80 ${DOCKERHUB_USERNAME}/yelb-ui
 
       # #############################
       # ## Email Notification
