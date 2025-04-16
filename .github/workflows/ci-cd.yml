@@ -18,9 +18,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      #######################
       ## Build All Images
-      #######################
 
       - name: Build yelb-db
         run: docker build -t yelb-db yelb-db
@@ -38,15 +36,7 @@ jobs:
           trivy image yelb-ui > yelb-ui-scan.txt
           trivy image yelb-appserver > yelb-appserver-scan.txt
 
-      # #############################
-      # ## Dockerfile Linting
-      # #############################
-      # - name: Lint Dockerfiles
-      #   run: |
-      #    hadolint ./yelb-ui/Dockerfile
-      #    hadolint ./yelb-appserver/Dockerfile
-      #    hadolint ./yelb-db/Dockerfile
-      #    # hadolint ./yelb-redis/Dockerfile
+      ## Dockerfile Linting
       # - name: Lint Dockerfiles
       #   run: |
       #     docker run --rm -i hadolint/hadolint < ./yelb-ui/Dockerfile
@@ -55,11 +45,9 @@ jobs:
         run: |
          docker run --rm -i hadolint/hadolint < ./yelb-ui/Dockerfile || true
          docker run --rm -i hadolint/hadolint < ./yelb-appserver/Dockerfile || true
-
-      # #########################
-      # ## Push to DockerHub
-      # #########################
-
+         docker run --rm -i hadolint/hadolint < ./yelb-db/Dockerfile || true
+         
+      ## Push to DockerHub
       - name: Login to DockerHub
         run: echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
 
@@ -84,18 +72,18 @@ jobs:
       #     curl -H "X-JFrog-Art-Api:${JFROG_API_KEY}" -T yelb-ui-scan.txt "${JFROG_URL}/yelb/yelb-ui-scan.txt"
       #     curl -H "X-JFrog-Art-Api:${JFROG_API_KEY}" -T yelb-appserver-scan.txt "${JFROG_URL}/yelb/yelb-appserver-scan.txt"
 
-      # #############################
-      # ## Staging Deployment
-      # #############################
+      #############################
+      ## Staging Deployment
+      #############################
 
-      # - name: Run containers for staging
-      #   run: |
-      #     docker network create yelb-network
+      - name: Run containers for staging
+        run: |
+          docker network create yelb-network
 
-      #     docker run -d --network yelb-network --name yelb-db yelb-db
-      #     docker run -d --network yelb-network --name yelb-redis yelb-redis
-      #     docker run -d --network yelb-network --name yelb-appserver -p 4567:4567 yelb-appserver
-      #     docker run -d --network yelb-network --name yelb-ui -p 80:80 yelb-ui
+          docker run -d --network yelb-network --name yelb-db yelb-db
+          docker run -d --network yelb-network --name yelb-redis yelb-redis
+          docker run -d --network yelb-network --name yelb-appserver -p 4567:4567 yelb-appserver
+          docker run -d --network yelb-network --name yelb-ui -p 80:80 yelb-ui
 
       # #############################
       # ## Email Notification
