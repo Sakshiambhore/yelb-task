@@ -56,12 +56,12 @@ jobs:
           docker tag yelb-ui ${DOCKERHUB_USERNAME}/yelb-ui:latest
           docker tag yelb-appserver ${DOCKERHUB_USERNAME}/yelb-appserver:latest
           docker tag yelb-db ${DOCKERHUB_USERNAME}/yelb-db:latest
-          docker tag redis:4.0.2 ${DOCKERHUB_USERNAME}/yelb-redis:latest
+          docker tag redis:4.0.2 ${DOCKERHUB_USERNAME}/redis-server:latest
 
           docker push ${DOCKERHUB_USERNAME}/yelb-ui:latest
           docker push ${DOCKERHUB_USERNAME}/yelb-appserver:latest
           docker push ${DOCKERHUB_USERNAME}/yelb-db:latest
-          docker push ${DOCKERHUB_USERNAME}/yelb-redis:latest
+          docker push ${DOCKERHUB_USERNAME}/redis-server:latest
 
       # #############################
       # ## Upload to JFrog Artifactory
@@ -80,9 +80,8 @@ jobs:
 
       - name: Run containers for staging
         run: |
-          docker network create yelb-network
           docker run -d --network yelb-network --name  yelb-db ${DOCKERHUB_USERNAME}/yelb-db
-          docker run -d --network yelb-network --name  yelb-redis -p 6379:6379 ${DOCKERHUB_USERNAME}/yelb-redis
+          docker run -d --network yelb-network --name redis-server -p 6379:6379 ${DOCKERHUB_USERNAME}/redis-server
           docker run -d --network yelb-network --name yelb-appserver -p 4567:4567 ${DOCKERHUB_USERNAME}/yelb-appserver
           docker run -d --network yelb-network --name yelb-ui -p 80:80 ${DOCKERHUB_USERNAME}/yelb-ui
 
